@@ -1,7 +1,7 @@
 {
-  "name": "schedule-service",
+  "name": "jadwal-service",
   "version": "1.0.0",
-  "description": "Service for managing feeding schedules",
+  "description": "Service for managing feeding jadwals",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

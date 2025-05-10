@@ -9,17 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      type: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      value: {
+      jumlahPakanKering: {
         type: Sequelize.FLOAT,
         allowNull: false
       },
-      timestamp: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      jumlahAir: {
+        type: Sequelize.FLOAT,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

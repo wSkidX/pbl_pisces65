@@ -2,19 +2,19 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Schedules", {
-      id: {
+    await queryInterface.createTable("Jadwal", {
+      idjadwal: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      time: {
-        type: Sequelize.TIME,
+      waktu_tanggal: {
+        type: Sequelize.DATEONLY,
         allowNull: false
       },
-      amount: {
-        type: Sequelize.FLOAT,
+      waktu_jam: {
+        type: Sequelize.TIME,
         allowNull: false
       },
       status: {
@@ -34,6 +34,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Schedules");
+    await queryInterface.dropTable("Jadwal");
   }
 };

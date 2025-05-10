@@ -1,21 +1,25 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const SensorData = sequelize.define('SensorData', {
-  id: {
+const Jadwal = sequelize.define('Jadwal', {
+  idjadwal: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false
   },
-  jumlahPakanKering: {
-    type: DataTypes.FLOAT,
+  waktu_tanggal: {
+    type: DataTypes.DATEONLY,
     allowNull: false
   },
-  jumlahAir: {
-    type: DataTypes.FLOAT,
+  waktu_jam: {
+    type: DataTypes.TIME,
     allowNull: false
+  },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'pending'
   }
 });
 
-module.exports = SensorData;
+module.exports = Jadwal;
