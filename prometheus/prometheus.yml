@@ -10,9 +10,9 @@ scrape_configs:
     static_configs:
       - targets: ['auth-service:3001']
 
-  - job_name: 'schedule-service'
+  - job_name: 'jadwal-service'
     static_configs:
-      - targets: ['schedule-service:3002']
+      - targets: ['jadwal-service:3002']
 
   - job_name: 'sensor-service'
     static_configs:

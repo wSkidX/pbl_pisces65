@@ -14,12 +14,12 @@ app.use('/api/auth', createProxyMiddleware({
   },
 }));
 
-// Proxy untuk schedule-service
-app.use('/api/schedule', createProxyMiddleware({
-  target: 'http://schedule-service:3002',
+// Proxy untuk jadwal-service
+app.use('/api/jadwal', createProxyMiddleware({
+  target: 'http://jadwal-service:3002',
   changeOrigin: true,
   pathRewrite: {
-    '^/api/schedule': '/',
+    '^/api/jadwal': '/',
   },
 }));
 

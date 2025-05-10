@@ -8,10 +8,17 @@ services:
       - "8080:8080"
     depends_on:
       - auth-service
-      - schedule-service
+      - jadwal-service
       - sensor-service
-
-      - rabbitmq
+    environment:
+      DB_USER: root
+      MYSQL_PASSWORD: ""
+      DB_PASSWORD: ""
+      DB_NAME: db_authService
+      DB_HOST: mysql
+      DB_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     deploy:
       resources:
         limits:
@@ -35,10 +42,10 @@ services:
           cpus: '0.5'
           memory: 256M
 
-  schedule-service:
-    build: ./services/schedule-service
+  jadwal-service:
+    build: ./services/jadwal-service
     command: sh -c "npx sequelize-cli db:migrate && npm start"
-    container_name: schedule-service
+    container_name: jadwal-service
     ports:
       - "3002:3002"
     environment:
