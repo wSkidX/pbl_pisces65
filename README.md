@@ -72,7 +72,7 @@ MIT
 
 flowchart TD
     subgraph User
-      FE[Frontend]
+      FE[Frontend ]
     end
     FE --> GW(API_Gateway)
     GW --> AUTH(Auth_Service)
