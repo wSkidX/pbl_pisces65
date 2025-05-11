@@ -15,6 +15,16 @@ const SensorData = sequelize.define('SensorData', {
   jumlahAir: {
     type: DataTypes.FLOAT,
     allowNull: false
+  },
+  mode: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'manual'
+  },
+  waktu_pakan: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW
   }
 });
 

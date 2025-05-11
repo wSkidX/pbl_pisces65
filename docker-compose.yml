@@ -123,11 +123,22 @@ services:
     image: nginx:latest
     container_name: nginx
     ports:
-      - "8088:8088"
+      - "8088:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - api-gateway
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
     deploy:
       resources:
         limits:
@@ -146,6 +157,7 @@ services:
         limits:
           cpus: '0.5'
           memory: 256M
+          
 
   grafana:
     image: grafana/grafana
@@ -159,6 +171,16 @@ services:
         limits:
           cpus: '0.5'
           memory: 256M
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto:/mosquitto
 
 volumes:
   db_data:

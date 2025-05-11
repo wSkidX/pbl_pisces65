@@ -4,19 +4,29 @@ class SensorController {
   // Rate limit: minimal 1 detik antar data per tipe sensor
   static lastReceived = {};
   static async createSensorData(req, res) {
-    const { type, value } = req.body;
-    const now = Date.now();
-    if (type) {
-      if (SensorController.lastReceived[type] && now - SensorController.lastReceived[type] < 1000) {
-        return res.status(429).json({ error: 'Terlalu sering mengirim data sensor yang sama, coba lagi nanti.' });
-      }
-      SensorController.lastReceived[type] = now;
-    }
     try {
-      const data = await SensorData.create({ type, value });
+      const now = Date.now();
+      const { type } = req.body;
+      if (type) {
+        if (SensorController.lastReceived[type] && now - SensorController.lastReceived[type] < 1000) {
+          return res.status(429).json({ error: 'Terlalu sering mengirim data sensor yang sama, coba lagi nanti.' });
+        }
+        SensorController.lastReceived[type] = now;
+      }
+      // allowedFields diupdate sesuai field model
+      const allowedFields = ['jumlahPakanKering', 'jumlahAir', 'mode', 'waktu_pakan'];
+      const payload = {};
+      allowedFields.forEach(f => {
+        if (req.body[f] !== undefined) payload[f] = req.body[f];
+      });
+      // Default mode dan waktu_pakan kalau tidak dikirim dari frontend
+      if (!payload.mode) payload.mode = 'manual';
+      if (!payload.waktu_pakan) payload.waktu_pakan = new Date();
+      const data = await SensorData.create(payload);
       res.status(201).json({ message: 'Sensor data created', dataId: data.id });
     } catch (error) {
-      res.status(400).json({ error: 'Failed to create sensor data' });
+      console.error('SensorData Create Error:', error);
+      res.status(400).json({ error: 'Failed to create sensor data', detail: error.message });
     }
   }
 
@@ -43,10 +53,16 @@ class SensorController {
     try {
       const data = await SensorData.findByPk(req.params.id);
       if (!data) return res.status(404).json({ error: 'Sensor data tidak ditemukan' });
-      await data.update(req.body);
+
+      const allowedFields = ['jumlahPakanKering', 'jumlahAir', 'mode', 'waktu_pakan'];
+      const payload = {};
+      allowedFields.forEach(f => {
+        if (req.body[f] !== undefined) payload[f] = req.body[f];
+      });
+      await data.update(payload);
       res.json(data);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to update sensor data' });
+      res.status(500).json({ error: 'Failed to update sensor data', detail: error.message });
     }
   }
 

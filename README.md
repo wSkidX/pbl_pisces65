@@ -1,15 +1,47 @@
 # Pisces65 IoT Feeder 🐟🚀
 
-Sistem IoT feeder otomatis untuk akuakultur, berbasis arsitektur microservices dengan Node.js, Express, Sequelize, dan Docker Compose. Dirancang untuk pengembang indie yang ingin solusi modular, scalable, dan mudah di-deploy!
+# IoT Feeder Otomatis Akuakultur
+
+Sistem feeder otomatis berbasis microservices untuk akuakultur. Modular, scalable, dan gampang di-deploy untuk pengembang indie.
 
 ---
 
-## ✨ Fitur Utama
-- **Autentikasi & Manajemen User** (Session, Cookie, Bcrypt)
-- **CRUD Jadwal Pemberian Pakan & Air**
-- **Manajemen Data Sensor**
-- **API Gateway & Monitoring (Grafana, Prometheus)**
-- **Dockerized, Hot Reload, dan Mudah Dikembangkan**
+## 🚀 Fitur Utama
+- **Autentikasi User** (session/cookie, bcrypt)
+- **CRUD Jadwal Pakan & Air** (otomatis/manual)
+- **Manajemen & Logging Data Sensor** (pakan, air, dsb)
+- **API Gateway** (routing, proteksi)
+- **Monitoring** (Grafana, Prometheus)
+- **Docker Compose, Hot Reload**
+
+---
+
+## ⚙️ Teknologi
+- Node.js, Express, Sequelize (MySQL)
+- Docker Compose
+- Grafana, Prometheus
+- MQTT/Mosquitto (opsional, untuk sensor/ESP32)
+
+---
+
+## 🔥 Cara Jalankan
+1. **Clone repo & install dependencies**
+   ```sh
+   git clone <repo-url>
+   cd PBL
+   npm install
+   ```
+2. **Copy env contoh & edit sesuai kebutuhan**
+   ```sh
+   cp .env.example .env
+   # edit DB, SESSION_SECRET, dsb
+   ```
+3. **Jalankan semua service**
+   ```sh
+   docker-compose up --build
+   # atau npm run dev di masing-masing service (tanpa docker)
+   ```
+4. **Akses API** via Postman/frontend, atau lihat monitoring di Grafana.
 
 ---
 
@@ -17,10 +49,27 @@ Sistem IoT feeder otomatis untuk akuakultur, berbasis arsitektur microservices d
 
 ![Arsitektur Mikroservice](docs/arsitektur-mikroservice.png)
 
-<details open>
-<summary>Diagram Arsitektur (Mermaid)</summary>
+- **auth-service:** login, register, session
+- **jadwal-service:** CRUD jadwal pakan/air
+- **sensor-service:** logging data sensor
+- **api-gateway:** entry point, proteksi route
+- **grafana/prometheus:** monitoring
 
-```mermaid
+---
+
+## 📖 Dokumentasi API
+Lihat file `docs/API_ESP32.md` atau dokumentasi Postman di repo ini.
+
+---
+
+## 🙌 Kontribusi
+Pull request & issue welcome! Project ini open buat belajar & pengembangan lebih lanjut.
+
+---
+
+## Lisensi
+MIT
+
 flowchart TD
     subgraph User
       FE[Frontend / Web / Mobile]

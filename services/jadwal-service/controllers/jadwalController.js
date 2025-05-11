@@ -2,12 +2,13 @@ const Jadwal = require('../models/jadwal');
 
 class JadwalController {
   static async createJadwal(req, res) {
-    const { time, amount } = req.body;
+    const { waktu_tanggal, waktu_jam } = req.body;
     try {
-      const jadwal = await Jadwal.create({ time, amount });
-      res.status(201).json({ message: 'Jadwal created', jadwalId: jadwal.id });
+      const jadwal = await Jadwal.create({ waktu_tanggal, waktu_jam });
+      res.status(201).json({ message: 'Jadwal created', jadwalId: jadwal.idjadwal });
     } catch (error) {
-      res.status(400).json({ error: 'Failed to create jadwal' });
+      console.error('Jadwal Create Error:', error);
+      res.status(400).json({ error: 'Failed to create jadwal', detail: error.message });
     }
   }
 
