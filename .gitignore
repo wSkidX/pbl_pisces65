@@ -45,3 +45,13 @@ services/*/build/
 
 # Ignore by root
 mysql/data/
+
+#test
+*.log
+*.txt
+
+#python
+test_api.py
+
+#powershell
+test-all.ps1

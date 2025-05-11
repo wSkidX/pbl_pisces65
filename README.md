@@ -52,36 +52,53 @@ services/
 
 ## 🧩 Service & API Endpoint
 
-### 1. Auth Service (`/auth-service`)
-| Method | Endpoint   | Deskripsi           |
-|--------|------------|---------------------|
-| POST   | /register  | Register user       |
-| POST   | /login     | Login user, session |
-| POST   | /logout    | Logout session      |
-| GET    | /          | List user           |
-| GET    | /:id       | Get user by id      |
-| PUT    | /:id       | Update user         |
-| DELETE | /:id       | Delete user         |
+### 📡 API Gateway Endpoint (Akses dari luar)
+Semua endpoint service dapat diakses melalui API Gateway dengan path yang lebih singkat:
 
-### 2. Jadwal Service (`/jadwal-service`)
+#### Auth
 | Method | Endpoint         | Deskripsi           |
 |--------|------------------|---------------------|
-| POST   | /jadwals         | Tambah jadwal       |
-| GET    | /jadwals         | List semua jadwal   |
-| GET    | /jadwals/:id     | Detail jadwal       |
-| PUT    | /jadwals/:id     | Update jadwal       |
-| DELETE | /jadwals/:id     | Hapus jadwal        |
+| POST   | /auth/register   | Register user       |
+| POST   | /auth/login      | Login user, session |
+| POST   | /auth/logout     | Logout session      |
+| GET    | /auth/users      | List user           |
+| GET    | /auth/users/:id  | Get user by id      |
+| PUT    | /auth/users/:id  | Update user         |
+| DELETE | /auth/users/:id  | Delete user         |
 
-### 3. Sensor Service (`/sensor-service`)
-| Method | Endpoint     | Deskripsi             |
-|--------|--------------|-----------------------|
-| POST   | /data        | Tambah data sensor    |
-| GET    | /data        | List data sensor      |
-| GET    | /data/:id    | Detail data sensor    |
-| PUT    | /data/:id    | Update data sensor    |
-| DELETE | /data/:id    | Hapus data sensor     |
+#### Jadwal
+| Method | Endpoint               | Deskripsi           |
+|--------|------------------------|---------------------|
+| POST   | /jadwal/add            | Tambah jadwal       |
+| GET    | /jadwal/get            | List semua jadwal   |
+| GET    | /jadwal/get/:id        | Detail jadwal       |
+| PUT    | /jadwal/update/:id     | Update jadwal       |
+| DELETE | /jadwal/delete/:id     | Hapus jadwal        |
+
+#### Sensor
+| Method | Endpoint         | Deskripsi             |
+|--------|------------------|-----------------------|
+| POST   | /sensor          | Tambah data sensor    |
+| GET    | /sensor          | List data sensor      |
+| GET    | /sensor/:id      | Detail data sensor    |
+| PUT    | /sensor/:id      | Update data sensor    |
+| DELETE | /sensor/:id      | Hapus data sensor     |
+
 
 ---
+
+## 🚦 Testing Otomatis Microservices (Tanpa MySQL)
+
+- Semua service sudah support testing tanpa MySQL, cukup dengan SQLite in-memory.
+- Jalankan semua test sekaligus dengan:
+  ```powershell
+  .\test-all.ps1
+  ```
+- Atau test per service:
+  ```powershell
+  $env:NODE_ENV="test"; npm test
+  ```
+- Test akan otomatis menggunakan SQLite dan tidak membutuhkan koneksi MySQL.
 
 ## ⚙️ Konfigurasi Environment
 - Semua konfigurasi env bisa diatur di `.env` atau langsung di `docker-compose.yml`.

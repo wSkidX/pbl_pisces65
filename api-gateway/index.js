@@ -6,40 +6,32 @@ const app = express();
 const port = 8080;
 
 // Proxy untuk auth-service
-app.use('/api/auth', createProxyMiddleware({
+app.use('/auth', createProxyMiddleware({
   target: 'http://auth-service:3001',
   changeOrigin: true,
   pathRewrite: {
-    '^/api/auth': '/',
+    '^/auth': '/',
   },
 }));
 
-// Proxy untuk jadwal-service
-app.use('/api/jadwal', createProxyMiddleware({
+// Proxy untuk jadwal-service (endpoint lebih singkat)
+app.use('/jadwal', createProxyMiddleware({
   target: 'http://jadwal-service:3002',
   changeOrigin: true,
   pathRewrite: {
-    '^/api/jadwal': '/',
+    '^/jadwal': '/',
   },
 }));
 
-// Proxy untuk sensor-service
-app.use('/api/sensor', createProxyMiddleware({
+// Proxy untuk sensor-service (endpoint lebih singkat)
+app.use('/sensor', createProxyMiddleware({
   target: 'http://sensor-service:3003',
   changeOrigin: true,
   pathRewrite: {
-    '^/api/sensor': '/',
+    '^/sensor': '/',
   },
 }));
 
-// Proxy untuk log-service
-app.use('/api/log', createProxyMiddleware({
-  target: 'http://log-service:3004',
-  changeOrigin: true,
-  pathRewrite: {
-    '^/api/log': '/',
-  },
-}));
 
 app.listen(port, () => {
   console.log(`API Gateway listening on port ${port}`);
