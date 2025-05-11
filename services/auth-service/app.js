@@ -6,6 +6,14 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
+// Prometheus metrics
+const register = require('./prometheus-setup');
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'gantiDenganSecretYangKuat',
   resave: false,

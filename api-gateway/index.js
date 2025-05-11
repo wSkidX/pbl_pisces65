@@ -5,6 +5,13 @@ require('dotenv').config();
 const app = express();
 const port = 8080;
 
+// Prometheus metrics
+const register = require('./prometheus-setup');
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+
 // Proxy untuk auth-service
 app.use('/auth', createProxyMiddleware({
   target: 'http://auth-service:3001',

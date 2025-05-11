@@ -1,8 +1,17 @@
 const SensorData = require('../models/sensorData');
 
 class SensorController {
+  // Rate limit: minimal 1 detik antar data per tipe sensor
+  static lastReceived = {};
   static async createSensorData(req, res) {
     const { type, value } = req.body;
+    const now = Date.now();
+    if (type) {
+      if (SensorController.lastReceived[type] && now - SensorController.lastReceived[type] < 1000) {
+        return res.status(429).json({ error: 'Terlalu sering mengirim data sensor yang sama, coba lagi nanti.' });
+      }
+      SensorController.lastReceived[type] = now;
+    }
     try {
       const data = await SensorData.create({ type, value });
       res.status(201).json({ message: 'Sensor data created', dataId: data.id });

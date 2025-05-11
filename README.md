@@ -13,6 +13,42 @@ Sistem IoT feeder otomatis untuk akuakultur, berbasis arsitektur microservices d
 
 ---
 
+## 🏗️ Arsitektur Microservices
+
+![Arsitektur Mikroservice](docs/arsitektur-mikroservice.png)
+
+<details open>
+<summary>Diagram Arsitektur (Mermaid)</summary>
+
+```mermaid
+flowchart TD
+    subgraph User
+      FE[Frontend / Web / Mobile]
+    end
+    FE --> GW(API_Gateway)
+    GW --> AUTH(Auth_Service)
+    GW --> JADWAL(Jadwal_Service)
+    GW --> SENSOR(Sensor_Service)
+    AUTH --> DB1[(Database User)]
+    JADWAL --> DB2[(Database Jadwal)]
+    SENSOR --> DB3[(Database Sensor)]
+    ESP32[ESP32/IoT Device] -- Kirim Data Sensor --> GW
+    Prometheus -.-> GW
+    Prometheus -.-> AUTH
+    Prometheus -.-> JADWAL
+    Prometheus -.-> SENSOR
+    Grafana -.-> Prometheus
+```
+
+</details>
+
+> Diagram di atas dapat dilihat langsung di editor markdown yang support Mermaid (misal: VSCode + plugin Markdown Preview Mermaid, GitHub, dll).
+
+> Ganti gambar `docs/arsitektur-mikroservice.png` dengan diagram arsitektur asli jika ingin tampilan visual yang lebih baik.
+
+
+---
+
 ## 🗂️ Struktur Direktori
 ```
 services/
