@@ -18,7 +18,10 @@ const Jadwal = sequelize.define('Jadwal', {
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: 'pending'
+    defaultValue: 'pending',
+    validate: {
+      isIn: [['pending', 'done']]
+    }
   }
 });
 

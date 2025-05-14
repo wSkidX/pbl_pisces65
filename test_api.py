@@ -13,7 +13,7 @@ Cara pakai:
 """
 import requests
 
-BASE_URL = 'http://localhost:8080'
+BASE_URL = 'https://pisces65.my.id/api/'
 s = requests.Session()
 
 # ---------- AUTH SERVICE ----------
@@ -144,7 +144,88 @@ def test_sensor():
     else:
         print('Tidak ada data sensor untuk test by ID, update, atau delete')
 
+def publish_dummy_sensor():
+    try:
+        import paho.mqtt.client as mqtt
+    except ImportError:
+        print("[INFO] Modul paho-mqtt belum terinstall. Jalankan: pip install paho-mqtt")
+        return
+    import time, json
+    MQTT_BROKER = "localhost"
+    MQTT_PORT = 1883
+    client = mqtt.Client()
+    try:
+        client.connect(MQTT_BROKER, MQTT_PORT, 60)
+        # Data real-time (ultrasonik, motor, servo, rtc)
+        client.publish("sensor/ultrasonik", json.dumps({
+            "feed_level_cm": 7.2,
+            "water_level_cm": 12.5
+        }))
+        client.publish("sensor/motor", json.dumps({
+            "status": "ON",
+            "duration_sec": 15
+        }))
+        client.publish("sensor/servo", json.dumps({
+            "status": "OPEN"
+        }))
+        client.publish("sensor/rtc", json.dumps({
+            "rtc_time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        }))
+        # Log feeding event
+        client.publish("event/feeding", json.dumps({
+            "executed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "feed_used_gram": 30,
+            "water_used_ml": 150,
+            "status": "success",
+            "message": "Feeding executed successfully",
+            "motor_duration_sec": 15,
+            "total_duration_sec": 20
+        }))
+        print("[INFO] Dummy MQTT data published!")
+        client.disconnect()
+    except Exception as e:
+        print(f"[WARN] Gagal publish ke MQTT broker: {e}")
+
+def test_dashboard():
+    print("\n=== DASHBOARD SUMMARY ===")
+    publish_dummy_sensor()
+    try:
+        resp = s.get(f'{BASE_URL}/dashboard')
+        print('Dashboard:', resp.status_code, resp.json())
+    except Exception as e:
+        print('Dashboard: ERROR', e)
+
+def test_jadwal_extra():
+    print("\n=== JADWAL SERVICE (Next & Last Feeding Log) ===")
+    try:
+        resp = s.get(f'{BASE_URL}/jadwal/next')
+        print('Next Jadwal:', resp.status_code, resp.json())
+    except Exception as e:
+        print('Next Jadwal: ERROR', e)
+    try:
+        resp = s.get(f'{BASE_URL}/jadwal/last_feeding_log')
+        print('Last Feeding Log:', resp.status_code, resp.json())
+    except Exception as e:
+        print('Last Feeding Log: ERROR', e)
+
+def test_sensor_extra():
+    print("\n=== SENSOR SERVICE (Realtime & System) ===")
+    for path, desc in [
+        ('status', 'Sensor Status'),
+        ('logs', 'Feeding Logs'),
+        ('system_status', 'System Status'),
+        ('current_stock', 'Current Stock')
+    ]:
+        try:
+            resp = s.get(f'{BASE_URL}/sensor/{path}')
+            print(f'{desc}:', resp.status_code, resp.json())
+        except Exception as e:
+            print(f'{desc}: ERROR', e)
+
 if __name__ == "__main__":
     test_auth()
     test_jadwal()
+    test_jadwal_extra()
     test_sensor()
+    test_sensor_extra()
+    test_dashboard()

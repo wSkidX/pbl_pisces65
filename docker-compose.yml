@@ -115,7 +115,7 @@ services:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - "8081:80"
+      - ""
     depends_on:
       - mysql
 
@@ -123,7 +123,7 @@ services:
     image: nginx:latest
     container_name: nginx
     ports:
-      - "8088:80"
+      - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
@@ -134,16 +134,6 @@ services:
           cpus: '0.5'
           memory: 128M
 
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared
-    environment:
-      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 128M
 
   prometheus:
     image: prom/prometheus
@@ -171,16 +161,5 @@ services:
         limits:
           cpus: '0.5'
           memory: 256M
-
-  mosquitto:
-    image: eclipse-mosquitto:2
-    container_name: mosquitto
-    restart: unless-stopped
-    ports:
-      - "1883:1883"
-      - "9001:9001"
-    volumes:
-      - ./mosquitto:/mosquitto
-
 volumes:
   db_data:

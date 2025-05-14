@@ -20,15 +20,15 @@ module.exports = {
       },
       nama: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       nohp: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       alamat: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       createdAt: {
         allowNull: false,

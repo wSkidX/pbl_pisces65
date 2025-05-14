@@ -52,6 +52,44 @@ class JadwalController {
       res.status(500).json({ error: 'Failed to delete jadwal' });
     }
   }
+
+  static async getNextJadwal(req, res) {
+    try {
+      // Ambil jadwal "pending" terdekat setelah sekarang
+      const now = new Date();
+      const jadwal = await Jadwal.findOne({
+        where: {
+          status: 'pending',
+          waktu_tanggal: { $gte: now.toISOString().slice(0,10) }
+        },
+        order: [['waktu_tanggal', 'ASC'], ['waktu_jam', 'ASC']]
+      });
+      if (jadwal) res.json(jadwal);
+      else res.json({});
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get next jadwal', detail: error.message });
+    }
+  }
+
+  static async getLastFeedingLog(req, res) {
+    try {
+      // Ambil jadwal terakhir yang sudah dilakukan (status 'done' atau 'pending')
+      const now = new Date();
+      const jadwal = await Jadwal.findOne({
+        where: {
+          status: ['done', 'pending'],
+          waktu_tanggal: { $lte: now.toISOString().slice(0,10) }
+        },
+        order: [['waktu_tanggal', 'DESC'], ['waktu_jam', 'DESC']]
+      });
+      if (jadwal) res.json(jadwal);
+      else res.json({});
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get last feeding log', detail: error.message });
+    }
+    
+  }
+
 }
 
 module.exports = JadwalController;

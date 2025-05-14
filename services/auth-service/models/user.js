@@ -19,15 +19,15 @@ const User = sequelize.define('User', {
   },
   nama: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   nohp: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   alamat: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   }
 });
 
