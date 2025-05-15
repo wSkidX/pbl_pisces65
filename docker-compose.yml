@@ -27,15 +27,19 @@ services:
 
   auth-service:
     build: ./services/auth-service
-    command: sh -c "npx sequelize-cli db:migrate && npm start"
+    command: sh -c "sleep 10 && npx sequelize-cli db:migrate --config config/config.js && npm start"
     container_name: auth-service
     ports:
       - "3001:3001"
     environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DB_NAME: db_authService
+      DB_USER: root
+      DB_PASSWORD: ""
+      DB_HOST: mysql
+      DB_PORT: 3306
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret}
+    depends_on:
+      - mysql
     deploy:
       resources:
         limits:
@@ -43,16 +47,24 @@ services:
           memory: 256M
 
   jadwal-service:
-    build: ./services/jadwal-service
-    command: sh -c "npx sequelize-cli db:migrate && npm start"
+    build:
+      context: .
+      dockerfile: ./services/jadwal-service/Dockerfile
+    command: sh -c "sleep 15 && npx sequelize-cli db:migrate --config config/config.js && npm start"
     container_name: jadwal-service
     ports:
       - "3002:3002"
     environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DB_NAME: db_jadwalService
+      DB_USER: root
+      DB_PASSWORD: ""
+      DB_HOST: mysql
+      DB_PORT: 3306
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret}
+      NOTIFICATION_SERVICE_URL: http://notification-service:3003
+    depends_on:
+      - mysql
+      - auth-service
     deploy:
       resources:
         limits:
@@ -60,18 +72,50 @@ services:
           memory: 256M
 
   sensor-service:
-    build: ./services/sensor-service
-    command: sh -c "npx sequelize-cli db:migrate && npm start"
+    build:
+      context: .
+      dockerfile: ./services/sensor-service/Dockerfile
+    command: sh -c "sleep 20 && npx sequelize-cli db:migrate --config config/config.js && npm start"
     container_name: sensor-service
     environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DB_NAME: db_sensorService
+      DB_USER: root
+      DB_PASSWORD: ""
       DB_HOST: mysql
       DB_PORT: 3306
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret}
+      NOTIFICATION_SERVICE_URL: http://notification-service:3003
     ports:
       - "3003:3003"
+    depends_on:
+      - mysql
+      - auth-service
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+          
+  notification-service:
+    build:
+      context: .
+      dockerfile: ./services/notification-service/Dockerfile
+    command: sh -c "sleep 25 && npx sequelize-cli db:migrate --config config/config.js && npm start"
+    container_name: notification-service
+    environment:
+      DB_NAME: db_notificationService
+      DB_USER: root
+      DB_PASSWORD: ""
+      DB_HOST: mysql
+      DB_PORT: 3306
+      AUTH_SERVICE_URL: http://auth-service:3001
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret}
+      PUSH_NOTIFICATION_ENABLED: "false"
+    ports:
+      - "3004:3003"
+    depends_on:
+      - mysql
+      - auth-service
     deploy:
       resources:
         limits:
@@ -92,7 +136,7 @@ services:
           memory: 256M
 
   mysql:
-    image: mysql:5.7
+    image: biarms/mysql:5
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -109,13 +153,13 @@ services:
           memory: 512M
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: snowdreamtech/phpmyadmin:latest
     container_name: phpmyadmin
     environment:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - ""
+      - "8085:80"
     depends_on:
       - mysql
 
@@ -123,9 +167,10 @@ services:
     image: nginx:latest
     container_name: nginx
     ports:
-      - "443:443"
+      - "8088:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../../DATA/AppData/frontend:/usr/share/nginx/html:ro
     depends_on:
       - api-gateway
     deploy:

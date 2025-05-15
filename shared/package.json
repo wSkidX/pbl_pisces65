@@ -1,0 +1,15 @@
+{
+  "name": "pisces65-shared",
+  "version": "1.0.0",
+  "description": "Shared utilities for Pisces65 services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "author": "PBL Team",
+  "license": "ISC"
+}

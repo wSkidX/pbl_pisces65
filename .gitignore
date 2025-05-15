@@ -35,3 +35,13 @@ frontend/build/
 # Misc
 .idea/
 *.swp
+
+#testing script
+__pycache__
+test_api.py
+wjwj.py
+power.ps1
+PBL.rar
+
+index.html
+esp32.ino

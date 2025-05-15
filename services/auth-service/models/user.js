@@ -2,10 +2,10 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const User = sequelize.define('User', {
-  userid: {
-    type: DataTypes.INTEGER,
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    autoIncrement: true,
     allowNull: false
   },
   email: {
@@ -19,16 +19,25 @@ const User = sequelize.define('User', {
   },
   nama: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: false
   },
-  nohp: {
+  no_hp: {
     type: DataTypes.STRING,
     allowNull: true
   },
   alamat: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true
   }
+}, {
+  timestamps: true, // Ini akan membuat created_at dan updated_at
+  underscored: true // Menggunakan snake_case untuk nama kolom
 });
+
+// Domain methods
+User.prototype.isValidPassword = async function(password) {
+  // Implementasi validasi password akan ditambahkan di userController
+  return true;
+};
 
 module.exports = User;

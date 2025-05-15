@@ -48,6 +48,15 @@ app.use('/sensor', createProxyMiddleware({
   },
 }));
 
+// Proxy untuk notification-service
+app.use('/notifications', createProxyMiddleware({
+  target: 'http://notification-service:3004',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/notifications': '/api',
+  },
+}));
+
 
 // Import dashboard route
 const dashboardRouter = require('./routes/dashboard');
